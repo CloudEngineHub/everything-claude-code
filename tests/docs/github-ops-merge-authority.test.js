@@ -25,21 +25,37 @@ const policyDocs = [
 
 console.log('\n=== Testing GitHub operations merge authority ===\n');
 
-for (const policy of policyDocs) {
-  const content = fs.readFileSync(path.join(repoRoot, policy.path), 'utf8');
+let passed = 0;
+let failed = 0;
 
-  assert.ok(content.includes(policy.approval), `${policy.path} must require user approval`);
-  assert.ok(content.includes(policy.prohibition), `${policy.path} must prohibit auto-merge`);
-  assert.ok(
-    !content.includes('Review and auto-merge safe dependency bumps'),
-    `${policy.path} must not authorize auto-merging dependency bumps`
-  );
-  assert.ok(
-    !content.includes('审查并自动合并安全的依赖项更新'),
-    `${policy.path} must not authorize auto-merging dependency bumps`
-  );
-
-  console.log(`  ✓ ${policy.path}`);
+function test(name, fn) {
+  try {
+    fn();
+    console.log(`  ✓ ${name}`);
+    passed++;
+  } catch (error) {
+    console.log(`  ✗ ${name}`);
+    console.log(`    Error: ${error.message}`);
+    failed++;
+  }
 }
 
-console.log(`\nPassed: ${policyDocs.length}`);
+for (const policy of policyDocs) {
+  test(policy.path, () => {
+    const content = fs.readFileSync(path.join(repoRoot, policy.path), 'utf8');
+
+    assert.ok(content.includes(policy.approval), `${policy.path} must require user approval`);
+    assert.ok(content.includes(policy.prohibition), `${policy.path} must prohibit auto-merge`);
+    assert.ok(
+      !content.includes('Review and auto-merge safe dependency bumps'),
+      `${policy.path} must not authorize auto-merging dependency bumps`
+    );
+    assert.ok(
+      !content.includes('审查并自动合并安全的依赖项更新'),
+      `${policy.path} must not authorize auto-merging dependency bumps`
+    );
+  });
+}
+
+console.log(`\nResults: Passed: ${passed}, Failed: ${failed}`);
+process.exit(failed > 0 ? 1 : 0);
