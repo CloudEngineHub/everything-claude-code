@@ -39,7 +39,7 @@ Three things follow from that.
 - The 2.2.1 source baseline includes guided manifest-driven setup, install-state
   ownership, repair and uninstall. Its release workflow requires exact-head
   validation; this roadmap is not release-signature evidence.
-- Catalog in this source snapshot: 68 agents, 289 skills, 94 legacy commands. The
+- Catalog in this source snapshot: 68 agents, 291 skills, 94 legacy commands. The
   count is a liability as much as an asset. Overlapping and unreferenced
   skills exist.
 - The README now has one primary install section, with per-harness details
